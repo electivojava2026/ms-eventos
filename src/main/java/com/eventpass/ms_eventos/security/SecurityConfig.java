@@ -26,8 +26,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Sin token (o token invalido) -> 401. Con token pero sin el rol -> 403
-                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(e -> e
+                    .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                    .accessDeniedHandler((request, response, ex) -> response.setStatus(HttpStatus.FORBIDDEN.value())))
                 .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/error").permitAll()
                         // Comprador (USER) y staff (STAFF) pueden consultar eventos y aforo
                         .requestMatchers(HttpMethod.GET, "/api/v1/eventos/**").hasAnyRole("USER", "STAFF")
                         // Crear, modificar, eliminar y reservar aforo: solo STAFF
