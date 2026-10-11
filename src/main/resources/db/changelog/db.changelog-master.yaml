@@ -1,0 +1,116 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-eventos-table
+      author: ms-eventos
+      changes:
+        - createTable:
+            tableName: eventos
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nombre
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: descripcion
+                  type: VARCHAR(1000)
+              - column:
+                  name: lugar
+                  type: VARCHAR(255)
+              - column:
+                  name: fecha_evento
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2-create-tipos-entrada-table
+      author: ms-eventos
+      changes:
+        - createTable:
+            tableName: tipos_entrada
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: nombre
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: precio
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aforo
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aforo_disponible
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: evento_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_tipos_entrada_evento
+                    references: eventos(id)
+
+  - changeSet:
+      id: 3-seed-eventos
+      author: ms-eventos
+      changes:
+        - insert:
+            tableName: eventos
+            columns:
+              - column: { name: nombre,      value: "Festival de Verano 2025" }
+              - column: { name: descripcion, value: "El festival de música más grande del año" }
+              - column: { name: lugar,       value: "Parque O'Higgins, Santiago" }
+              - column: { name: fecha_evento, valueDate: "2025-01-15T18:00:00" }
+        - insert:
+            tableName: eventos
+            columns:
+              - column: { name: nombre,      value: "Conferencia Tech 2025" }
+              - column: { name: descripcion, value: "Charlas y talleres de tecnología" }
+              - column: { name: lugar,       value: "Centro de Convenciones, Santiago" }
+              - column: { name: fecha_evento, valueDate: "2025-03-20T09:00:00" }
+        - insert:
+            tableName: tipos_entrada
+            columns:
+              - column: { name: nombre,           value: "General" }
+              - column: { name: precio,            valueNumeric: 15000 }
+              - column: { name: aforo,             valueNumeric: 500 }
+              - column: { name: aforo_disponible,  valueNumeric: 498 }
+              - column: { name: evento_id,         valueNumeric: 1 }
+        - insert:
+            tableName: tipos_entrada
+            columns:
+              - column: { name: nombre,           value: "VIP" }
+              - column: { name: precio,            valueNumeric: 35000 }
+              - column: { name: aforo,             valueNumeric: 100 }
+              - column: { name: aforo_disponible,  valueNumeric: 100 }
+              - column: { name: evento_id,         valueNumeric: 1 }
+        - insert:
+            tableName: tipos_entrada
+            columns:
+              - column: { name: nombre,           value: "General" }
+              - column: { name: precio,            valueNumeric: 10000 }
+              - column: { name: aforo,             valueNumeric: 300 }
+              - column: { name: aforo_disponible,  valueNumeric: 299 }
+              - column: { name: evento_id,         valueNumeric: 2 }
