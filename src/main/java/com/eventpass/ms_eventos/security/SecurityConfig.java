@@ -39,7 +39,9 @@ public class SecurityConfig {
                     .requestMatchers("/error").permitAll()
                         // Comprador (USER) y staff (STAFF) pueden consultar eventos y aforo
                         .requestMatchers(HttpMethod.GET, "/api/v1/eventos/**").hasAnyRole("USER", "STAFF")
-                        // Crear, modificar, eliminar y reservar aforo: solo STAFF
+                        // Reservar aforo: STAFF o la cuenta de servicio de ms-ordenes (rol SERVICE)
+                        .requestMatchers(HttpMethod.POST, "/api/v1/eventos/*/tipos-entrada/*/reservas").hasAnyRole("STAFF", "SERVICE")
+                        // Crear, modificar y eliminar: solo STAFF
                         .requestMatchers("/api/v1/eventos/**").hasRole("STAFF")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
